@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f8ff;
-  --foreground: #0f172a;
-  --surface: #ffffff;
-  --surface-muted: #e6edf8;
+  --background: #06080f;
+  --foreground: #edf2ff;
+  --surface: #0f1420cc;
+  --surface-muted: #171f31cc;
+  --line: #ffffff1f;
+  --accent: #38bdf8;
 }
 
 @theme inline {
@@ -22,7 +24,24 @@ body {
 .app-bg {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 10% 10%, #d6e4ff 0%, transparent 30%),
-    radial-gradient(circle at 90% 0%, #bcd4ff 0%, transparent 35%),
-    linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+    radial-gradient(circle at 20% 20%, #0ea5e933 0%, transparent 35%),
+    radial-gradient(circle at 80% 0%, #8b5cf633 0%, transparent 30%),
+    radial-gradient(circle at 70% 80%, #22d3ee22 0%, transparent 40%),
+    linear-gradient(180deg, #070b14 0%, #04060a 100%);
+}
+
+.glass {
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--surface), var(--surface-muted));
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 40px #02061766;
+}
+
+.neon-text {
+  text-shadow: 0 0 20px #38bdf866;
+}
+
+.ui-muted {
+  color: #b4bfd8;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLanguage } from "@/components/LanguageProvider";
 
 type PdfPreviewProps = {
   file: File | null;
@@ -25,6 +26,7 @@ type PreviewDocLike = {
 };
 
 export function PdfPreview({ file, selectedPages = [], onPageCount }: PdfPreviewProps) {
+  const { lang } = useLanguage();
   const [pageCount, setPageCount] = useState(0);
   const pdfRef = useRef<unknown>(null);
   const renderedRef = useRef<Set<number>>(new Set());
@@ -141,17 +143,23 @@ export function PdfPreview({ file, selectedPages = [], onPageCount }: PdfPreview
 
   if (!file) {
     return (
-      <div className="rounded-2xl bg-white p-6 text-sm text-slate-500 shadow-sm ring-1 ring-slate-200">
-        Upload a PDF to see page previews.
+      <div className="glass rounded-2xl p-6 text-sm ui-muted">
+        {lang === "ja"
+          ? "PDF\u3092\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9\u3059\u308b\u3068\u30d7\u30ec\u30d3\u30e5\u30fc\u3092\u8868\u793a\u3067\u304d\u307e\u3059\u3002"
+          : "Upload a PDF to see page previews."}
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+    <div className="glass rounded-2xl p-4">
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm font-semibold text-slate-700">Preview</p>
-        <p className="text-xs text-slate-500">{pageCount} pages</p>
+        <p className="text-sm font-semibold text-slate-100">
+          {lang === "ja" ? "\u30d7\u30ec\u30d3\u30e5\u30fc" : "Preview"}
+        </p>
+        <p className="text-xs ui-muted">
+          {lang === "ja" ? `${pageCount} \u30da\u30fc\u30b8` : `${pageCount} pages`}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
@@ -168,7 +176,7 @@ export function PdfPreview({ file, selectedPages = [], onPageCount }: PdfPreview
                 }
               }}
               className={`rounded-lg border p-2 ${
-                selected ? "border-slate-300" : "border-slate-200 opacity-45"
+                selected ? "border-white/25" : "border-white/10 opacity-45"
               }`}
             >
               <canvas
@@ -178,9 +186,11 @@ export function PdfPreview({ file, selectedPages = [], onPageCount }: PdfPreview
                   }
                 }}
                 className="mx-auto h-auto w-full rounded"
-                aria-label={`PDF page ${page}`}
+                aria-label={lang === "ja" ? `PDF \u30da\u30fc\u30b8 ${page}` : `PDF page ${page}`}
               />
-              <p className="mt-2 text-center text-xs text-slate-600">Page {page}</p>
+              <p className="mt-2 text-center text-xs ui-muted">
+                {lang === "ja" ? `\u30da\u30fc\u30b8 ${page}` : `Page ${page}`}
+              </p>
             </div>
           );
         })}

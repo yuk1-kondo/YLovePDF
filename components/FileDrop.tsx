@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useDropzone } from "react-dropzone";
+import { useLanguage } from "@/components/LanguageProvider";
 import { MAX_FILE_SIZE, formatBytes } from "@/utils/fileHelpers";
 
 type FileDropProps = {
@@ -17,6 +18,8 @@ export function FileDrop({
   multiple = true,
   label,
 }: FileDropProps) {
+  const { lang } = useLanguage();
+
   const acceptConfig = useMemo(
     () =>
       accept.reduce<Record<string, string[]>>((acc, type) => {
@@ -40,34 +43,38 @@ export function FileDrop({
       <div
         {...getRootProps()}
         aria-label={`${label} drop area`}
-        className={`rounded-2xl border-2 border-dashed p-8 text-center transition ${
+        className={`glass rounded-2xl border-2 border-dashed p-8 text-center transition ${
           isDragActive
-            ? "border-[#0f172a] bg-slate-100"
-            : "border-slate-300 bg-white hover:border-slate-500"
+            ? "border-cyan-300/80 bg-cyan-900/20"
+            : "border-white/20 hover:border-cyan-300/50"
         }`}
       >
         <input {...getInputProps()} aria-label={label} />
-        <p className="text-sm font-semibold text-slate-700">{label}</p>
-        <p className="mt-2 text-xs text-slate-500">
-          Drag and drop files here, or click to choose files (max {formatBytes(MAX_FILE_SIZE)}).
+        <p className="text-sm font-semibold text-slate-100">{label}</p>
+        <p className="ui-muted mt-2 text-xs">
+          {lang === "ja"
+            ? `\u3053\u3053\u306b\u30d5\u30a1\u30a4\u30eb\u3092\u30c9\u30e9\u30c3\u30b0\u3059\u308b\u304b\u3001\u30af\u30ea\u30c3\u30af\u3057\u3066\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u6700\u5927 ${formatBytes(MAX_FILE_SIZE)}`
+            : `Drag and drop files here, or click to choose files (max ${formatBytes(MAX_FILE_SIZE)}).`}
         </p>
         <button
           type="button"
-          className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white"
+          className="mt-4 rounded-lg border border-cyan-200/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold text-cyan-100"
           onClick={(event) => {
             event.stopPropagation();
             open();
           }}
         >
-          Select files
+          {lang === "ja" ? "\u30d5\u30a1\u30a4\u30eb\u3092\u9078\u629e" : "Select files"}
         </button>
       </div>
 
       {fileRejections.length > 0 && (
-        <ul className="mt-3 space-y-2 text-xs text-red-600" aria-live="polite">
+        <ul className="mt-3 space-y-2 text-xs text-rose-300" aria-live="polite">
           {fileRejections.map((rejection) => (
             <li key={rejection.file.name}>
-              {rejection.file.name}: invalid type or exceeds {formatBytes(MAX_FILE_SIZE)}
+              {lang === "ja"
+                ? `${rejection.file.name}: \u5f62\u5f0f\u304c\u7121\u52b9\u307e\u305f\u306f\u5bb9\u91cf\u8d85\u904e (${formatBytes(MAX_FILE_SIZE)})`
+                : `${rejection.file.name}: invalid type or exceeds ${formatBytes(MAX_FILE_SIZE)}`}
             </li>
           ))}
         </ul>
