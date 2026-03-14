@@ -25,7 +25,7 @@ export function PageSelector({ pageCount, selectedPages, onChange }: PageSelecto
 
   return (
     <div className="glass rounded-2xl p-4">
-      <p className="mb-3 text-sm font-semibold text-slate-100">
+      <p className="mb-3 text-sm font-semibold text-slate-800">
         {lang === "ja"
           ? "\u30da\u30fc\u30b8\u9078\u629e\uff08\u672a\u9078\u629e\u3067\u5168\u30da\u30fc\u30b8\uff09"
           : "Select pages (empty = all)"}
@@ -41,8 +41,8 @@ export function PageSelector({ pageCount, selectedPages, onChange }: PageSelecto
               onClick={() => toggle(page)}
               className={`rounded-lg border px-2 py-1 text-xs font-medium ${
                 active
-                  ? "border-cyan-300/70 bg-cyan-400/20 text-cyan-100"
-                  : "border-white/20 bg-slate-900/40 text-slate-300"
+                  ? "border-red-600 bg-red-600 text-white"
+                  : "border-gray-300 bg-white text-slate-700"
               }`}
             >
               {page}

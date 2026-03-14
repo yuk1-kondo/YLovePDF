@@ -54,7 +54,7 @@ export default function MergePage() {
       />
 
       <div className="glass rounded-2xl p-4">
-        <p className="text-sm font-semibold text-slate-100">{isJa ? "\u30d5\u30a1\u30a4\u30eb\u9806" : "File order"}</p>
+        <p className="text-sm font-semibold text-slate-800">{isJa ? "\u30d5\u30a1\u30a4\u30eb\u9806" : "File order"}</p>
         <ol className="ui-muted mt-2 list-decimal space-y-1 pl-5 text-sm">
           {files.map((file) => (
             <li key={file.name}>{file.name}</li>
@@ -71,7 +71,7 @@ export default function MergePage() {
           disabled={!result}
           onClick={() => result && downloadBlob(result, "merged.pdf")}
         />
-        {error && <p className="text-sm text-rose-300">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     </ToolLayout>
   );

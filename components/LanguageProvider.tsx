@@ -16,17 +16,29 @@ type LanguageProviderProps = {
 };
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
-  const [lang, setLang] = useState<Language>("en");
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem("ylovepdf.lang");
-    if (saved === "en" || saved === "ja") {
-      setLang(saved);
+  const [lang, setLang] = useState<Language>(() => {
+    if (typeof window === "undefined") {
+      return "en";
     }
-  }, []);
+
+    try {
+      const saved = window.localStorage.getItem("ylovepdf.lang");
+      if (saved === "en" || saved === "ja") {
+        return saved;
+      }
+    } catch {
+      // Ignore storage access failures (private mode, policy restrictions, etc.).
+    }
+
+    return "en";
+  });
 
   useEffect(() => {
-    window.localStorage.setItem("ylovepdf.lang", lang);
+    try {
+      window.localStorage.setItem("ylovepdf.lang", lang);
+    } catch {
+      // Language switching should continue even if persistence is unavailable.
+    }
     document.documentElement.lang = lang;
   }, [lang]);
 

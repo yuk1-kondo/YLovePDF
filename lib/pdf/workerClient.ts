@@ -29,6 +29,7 @@ type TaskMap = {
     payload: {
       file: ArrayBuffer;
       scale?: number;
+      targetLongEdge?: number;
       format?: "png" | "jpg";
       quality?: number;
     };
@@ -43,6 +44,7 @@ type TaskMap = {
 };
 
 let worker: Worker | null = null;
+const WORKER_TASK_TIMEOUT_MS = 120_000;
 
 function getWorker(): Worker {
   if (worker) {
@@ -63,12 +65,24 @@ export function runWorkerTask<K extends keyof TaskMap>(
   const id = crypto.randomUUID();
 
   return new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      cleanup();
+      reject(new Error(`Worker task \"${String(type)}\" timed out after ${WORKER_TASK_TIMEOUT_MS}ms`));
+    }, WORKER_TASK_TIMEOUT_MS);
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+      activeWorker.removeEventListener("message", handleMessage);
+      activeWorker.removeEventListener("error", handleError);
+      activeWorker.removeEventListener("messageerror", handleMessageError);
+    };
+
     const handleMessage = (event: MessageEvent<WorkerResponse<TaskMap[K]["result"]>>) => {
       if (event.data.id !== id) {
         return;
       }
 
-      activeWorker.removeEventListener("message", handleMessage);
+      cleanup();
 
       if (!event.data.ok) {
         reject(new Error(event.data.error));
@@ -78,7 +92,25 @@ export function runWorkerTask<K extends keyof TaskMap>(
       resolve(event.data.result);
     };
 
+    const handleError = (event: ErrorEvent) => {
+      cleanup();
+      reject(new Error(event.message || `Worker task \"${String(type)}\" failed`));
+    };
+
+    const handleMessageError = () => {
+      cleanup();
+      reject(new Error(`Worker task \"${String(type)}\" received an unreadable response`));
+    };
+
     activeWorker.addEventListener("message", handleMessage);
-    activeWorker.postMessage({ id, type, payload });
+    activeWorker.addEventListener("error", handleError);
+    activeWorker.addEventListener("messageerror", handleMessageError);
+
+    try {
+      activeWorker.postMessage({ id, type, payload });
+    } catch (error) {
+      cleanup();
+      reject(error instanceof Error ? error : new Error("Failed to post worker task"));
+    }
   });
 }

@@ -63,7 +63,7 @@ export default function CompressPage() {
           disabled={!result}
           onClick={() => result && downloadBlob(result, "compressed.pdf")}
         />
-        {error && <p className="text-sm text-rose-300">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     </ToolLayout>
   );

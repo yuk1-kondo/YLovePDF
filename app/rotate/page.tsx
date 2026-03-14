@@ -60,12 +60,12 @@ export default function RotatePage() {
       />
 
       <div className="glass rounded-2xl p-4">
-        <label htmlFor="angle" className="mb-2 block text-sm font-semibold text-slate-100">
+        <label htmlFor="angle" className="mb-2 block text-sm font-semibold text-slate-800">
           {isJa ? "\u56de\u8ee2\u89d2\u5ea6" : "Rotation angle"}
         </label>
         <select
           id="angle"
-          className="rounded-lg border border-white/20 bg-slate-900/60 px-3 py-2 text-sm text-slate-100"
+          className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-slate-800"
           value={angle}
           onChange={(e) => setAngle(Number(e.target.value) as 90 | 180 | 270)}
         >
@@ -88,7 +88,7 @@ export default function RotatePage() {
           disabled={!result}
           onClick={() => result && downloadBlob(result, "rotated.pdf")}
         />
-        {error && <p className="text-sm text-rose-300">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     </ToolLayout>
   );

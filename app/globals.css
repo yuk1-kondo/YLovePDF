@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #06080f;
-  --foreground: #edf2ff;
-  --surface: #0f1420cc;
-  --surface-muted: #171f31cc;
-  --line: #ffffff1f;
-  --accent: #38bdf8;
+  --background: #f4f6f8;
+  --foreground: #1f2937;
+  --surface: #ffffff;
+  --surface-muted: #fbfbfc;
+  --line: #e5e7eb;
+  --accent: #e5322d;
 }
 
 @theme inline {
@@ -24,24 +24,34 @@ body {
 .app-bg {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 20% 20%, #0ea5e933 0%, transparent 35%),
-    radial-gradient(circle at 80% 0%, #8b5cf633 0%, transparent 30%),
-    radial-gradient(circle at 70% 80%, #22d3ee22 0%, transparent 40%),
-    linear-gradient(180deg, #070b14 0%, #04060a 100%);
+    radial-gradient(circle at 15% 10%, #fff1f1 0%, transparent 35%),
+    radial-gradient(circle at 90% 0%, #ffe6e6 0%, transparent 28%),
+    linear-gradient(180deg, #f7f8fa 0%, #eef1f5 100%);
 }
 
 .glass {
   border: 1px solid var(--line);
   background: linear-gradient(180deg, var(--surface), var(--surface-muted));
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 20px 40px #02061766;
+  box-shadow: 0 12px 28px #0f172a14;
 }
 
 .neon-text {
-  text-shadow: 0 0 20px #38bdf866;
+  color: #1f2937;
+  text-shadow: none;
 }
 
 .ui-muted {
-  color: #b4bfd8;
+  color: #6b7280;
+}
+
+.text-slate-100 {
+  color: #1f2937;
+}
+
+.text-cyan-200 {
+  color: var(--accent);
+}
+
+.text-rose-300 {
+  color: #b91c1c;
 }

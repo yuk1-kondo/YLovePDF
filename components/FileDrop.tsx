@@ -45,12 +45,12 @@ export function FileDrop({
         aria-label={`${label} drop area`}
         className={`glass rounded-2xl border-2 border-dashed p-8 text-center transition ${
           isDragActive
-            ? "border-cyan-300/80 bg-cyan-900/20"
-            : "border-white/20 hover:border-cyan-300/50"
+            ? "border-red-400 bg-red-50"
+            : "border-gray-300 hover:border-red-300"
         }`}
       >
         <input {...getInputProps()} aria-label={label} />
-        <p className="text-sm font-semibold text-slate-100">{label}</p>
+        <p className="text-sm font-semibold text-slate-800">{label}</p>
         <p className="ui-muted mt-2 text-xs">
           {lang === "ja"
             ? `\u3053\u3053\u306b\u30d5\u30a1\u30a4\u30eb\u3092\u30c9\u30e9\u30c3\u30b0\u3059\u308b\u304b\u3001\u30af\u30ea\u30c3\u30af\u3057\u3066\u9078\u629e\u3057\u3066\u304f\u3060\u3055\u3044\u3002\u6700\u5927 ${formatBytes(MAX_FILE_SIZE)}`
@@ -58,7 +58,7 @@ export function FileDrop({
         </p>
         <button
           type="button"
-          className="mt-4 rounded-lg border border-cyan-200/40 bg-cyan-500/10 px-4 py-2 text-xs font-semibold text-cyan-100"
+          className="mt-4 rounded-lg border border-red-600 bg-red-600 px-4 py-2 text-xs font-semibold text-white"
           onClick={(event) => {
             event.stopPropagation();
             open();
@@ -69,7 +69,7 @@ export function FileDrop({
       </div>
 
       {fileRejections.length > 0 && (
-        <ul className="mt-3 space-y-2 text-xs text-rose-300" aria-live="polite">
+        <ul className="mt-3 space-y-2 text-xs text-red-700" aria-live="polite">
           {fileRejections.map((rejection) => (
             <li key={rejection.file.name}>
               {lang === "ja"

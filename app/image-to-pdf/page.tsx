@@ -63,10 +63,10 @@ export default function ImageToPdfPage() {
       />
 
       <div className="glass rounded-2xl p-4">
-        <p className="mb-3 text-sm font-semibold text-slate-100">{isJa ? "\u753b\u50cf\u30d7\u30ec\u30d3\u30e5\u30fc" : "Image preview"}</p>
+        <p className="mb-3 text-sm font-semibold text-slate-800">{isJa ? "\u753b\u50cf\u30d7\u30ec\u30d3\u30e5\u30fc" : "Image preview"}</p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {previews.map((item) => (
-            <div key={item.name} className="rounded-lg border border-white/20 bg-slate-900/30 p-2">
+            <div key={item.name} className="rounded-lg border border-gray-300 bg-white p-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={item.url} alt={item.name} className="h-28 w-full rounded object-cover" />
               <p className="ui-muted mt-2 truncate text-xs">{item.name}</p>
@@ -82,7 +82,7 @@ export default function ImageToPdfPage() {
           disabled={!result}
           onClick={() => result && downloadBlob(result, "images.pdf")}
         />
-        {error && <p className="text-sm text-rose-300">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     </ToolLayout>
   );

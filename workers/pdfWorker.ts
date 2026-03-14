@@ -21,6 +21,7 @@ type WorkerRequest =
       payload: {
         file: ArrayBuffer;
         scale?: number;
+        targetLongEdge?: number;
         format?: "png" | "jpg";
         quality?: number;
       };
@@ -123,6 +124,7 @@ async function imageToPdf(images: ImageInput[]): Promise<ArrayBuffer> {
 async function pdfToImage(
   file: ArrayBuffer,
   scale = 1.5,
+  targetLongEdge?: number,
   format: "png" | "jpg" = "png",
   quality = 0.9,
 ): Promise<Array<{ name: string; data: ArrayBuffer }>> {
@@ -143,7 +145,10 @@ async function pdfToImage(
 
   for (let i = 1; i <= doc.numPages; i += 1) {
     const page = await doc.getPage(i);
-    const viewport = page.getViewport({ scale });
+    const baseViewport = page.getViewport({ scale: 1 });
+    const baseLongEdge = Math.max(baseViewport.width, baseViewport.height);
+    const effectiveScale = targetLongEdge && baseLongEdge > 0 ? targetLongEdge / baseLongEdge : scale;
+    const viewport = page.getViewport({ scale: effectiveScale });
     const canvas = new OffscreenCanvas(Math.ceil(viewport.width), Math.ceil(viewport.height));
     const context = canvas.getContext("2d");
 
@@ -187,7 +192,13 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     } else if (type === "compress") {
       result = await compressPdf(payload.file);
     } else if (type === "pdfToImage") {
-      result = await pdfToImage(payload.file, payload.scale, payload.format, payload.quality);
+      result = await pdfToImage(
+        payload.file,
+        payload.scale,
+        payload.targetLongEdge,
+        payload.format,
+        payload.quality,
+      );
     } else {
       result = await imageToPdf(payload.images);
     }

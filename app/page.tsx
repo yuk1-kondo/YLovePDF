@@ -56,7 +56,7 @@ export default function Home() {
     <main className="mx-auto min-h-screen w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
       <header className="mb-10 flex flex-col gap-4">
         <p className="ui-muted text-xs tracking-[0.2em]">YLOVEPDF // LOCAL FIRST</p>
-        <h1 className="neon-text text-5xl font-bold tracking-tight text-slate-100">
+        <h1 className="neon-text text-5xl font-bold tracking-tight text-slate-800">
           {isJa ? "PDF\u30c4\u30fc\u30eb" : "PDF Tools"}
         </h1>
         <p className="ui-muted max-w-2xl text-sm">
@@ -71,11 +71,11 @@ export default function Home() {
           <Link
             key={tool.href}
             href={tool.href}
-            className="glass group rounded-2xl p-6 transition hover:-translate-y-1 hover:border-cyan-200/40"
+            className="glass group rounded-2xl p-6 transition hover:-translate-y-1 hover:border-red-200"
           >
-            <p className="text-lg font-semibold text-slate-100">{isJa ? tool.nameJa : tool.nameEn}</p>
+            <p className="text-lg font-semibold text-slate-800">{isJa ? tool.nameJa : tool.nameEn}</p>
             <p className="ui-muted mt-2 text-sm">{isJa ? tool.descriptionJa : tool.descriptionEn}</p>
-            <p className="mt-5 text-sm font-medium text-cyan-200 group-hover:underline">
+            <p className="mt-5 text-sm font-medium text-red-600 group-hover:underline">
               {isJa ? "\u30c4\u30fc\u30eb\u3092\u958b\u304f" : "Open tool"}
             </p>
           </Link>

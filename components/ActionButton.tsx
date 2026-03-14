@@ -24,7 +24,7 @@ export function ActionButton({
       aria-label={label}
       onClick={onClick}
       disabled={disabled || loading}
-      className="rounded-xl border border-cyan-300/30 bg-slate-900/80 px-5 py-3 text-sm font-semibold text-slate-100 shadow-lg shadow-cyan-900/20 transition hover:-translate-y-0.5 hover:border-cyan-200/50 hover:bg-slate-800 disabled:cursor-not-allowed disabled:border-slate-600 disabled:bg-slate-700"
+      className="rounded-xl border border-red-600 bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-red-700 disabled:cursor-not-allowed disabled:border-gray-300 disabled:bg-gray-300"
     >
       {loading ? loadingText : label}
     </button>

@@ -65,13 +65,13 @@ export default function SplitPage() {
       <PdfPreview file={file} />
 
       <div className="glass rounded-2xl p-4">
-        <p className="text-sm font-semibold text-slate-100">{isJa ? "\u51fa\u529b\u30d5\u30a1\u30a4\u30eb" : "Output files"}</p>
+        <p className="text-sm font-semibold text-slate-800">{isJa ? "\u51fa\u529b\u30d5\u30a1\u30a4\u30eb" : "Output files"}</p>
         <div className="mt-2 max-h-44 space-y-2 overflow-auto">
           {results.map((r) => (
             <button
               key={r.name}
               type="button"
-              className="block text-sm text-cyan-200 underline"
+              className="block text-sm text-red-600 underline"
               onClick={() => downloadBlob(r.blob, r.name)}
             >
               {r.name}
@@ -87,7 +87,7 @@ export default function SplitPage() {
           disabled={results.length === 0}
           onClick={downloadAll}
         />
-        {error && <p className="text-sm text-rose-300">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     </ToolLayout>
   );

@@ -154,7 +154,7 @@ export function PdfPreview({ file, selectedPages = [], onPageCount }: PdfPreview
   return (
     <div className="glass rounded-2xl p-4">
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm font-semibold text-slate-100">
+        <p className="text-sm font-semibold text-slate-800">
           {lang === "ja" ? "\u30d7\u30ec\u30d3\u30e5\u30fc" : "Preview"}
         </p>
         <p className="text-xs ui-muted">
@@ -176,7 +176,7 @@ export function PdfPreview({ file, selectedPages = [], onPageCount }: PdfPreview
                 }
               }}
               className={`rounded-lg border p-2 ${
-                selected ? "border-white/25" : "border-white/10 opacity-45"
+                selected ? "border-gray-300" : "border-gray-200 opacity-55"
               }`}
             >
               <canvas

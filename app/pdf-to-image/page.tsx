@@ -6,8 +6,22 @@ import { FileDrop } from "@/components/FileDrop";
 import { useLanguage } from "@/components/LanguageProvider";
 import { PdfPreview } from "@/components/PdfPreview";
 import { ToolLayout } from "@/components/ToolLayout";
-import { pdfToImages, zipImages, type ImageFormat, type PdfImageResult } from "@/lib/pdf/pdfToImage";
+import {
+  pdfToImages,
+  zipImages,
+  type ImageFormat,
+  type ImageSizePreset,
+  type PdfImageResult,
+} from "@/lib/pdf/pdfToImage";
 import { downloadBlob } from "@/utils/download";
+
+const IMAGE_SIZE_OPTIONS: Array<{ value: ImageSizePreset; labelEn: string; labelJa: string }> = [
+  { value: "original", labelEn: "Original (Auto)", labelJa: "\u5143\u30b5\u30a4\u30ba (\u81ea\u52d5)" },
+  { value: "hd", labelEn: "HD (1280px)", labelJa: "HD (1280px)" },
+  { value: "fullhd", labelEn: "Full HD (1920px)", labelJa: "\u30d5\u30ebHD (1920px)" },
+  { value: "2k", labelEn: "2K (2560px)", labelJa: "2K (2560px)" },
+  { value: "4k", labelEn: "4K (3840px)", labelJa: "4K (3840px)" },
+];
 
 export default function PdfToImagePage() {
   const { lang } = useLanguage();
@@ -15,6 +29,7 @@ export default function PdfToImagePage() {
   const [file, setFile] = useState<File | null>(null);
   const [images, setImages] = useState<PdfImageResult[]>([]);
   const [format, setFormat] = useState<ImageFormat>("jpg");
+  const [size, setSize] = useState<ImageSizePreset>("fullhd");
   const [quality, setQuality] = useState(0.9);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,7 +43,7 @@ export default function PdfToImagePage() {
     try {
       setLoading(true);
       setError(null);
-      const out = await pdfToImages(file, { format, quality });
+      const out = await pdfToImages(file, { format, quality, size });
       setImages(out);
     } catch (e) {
       setError(e instanceof Error ? e.message : isJa ? "\u5909\u63db\u306b\u5931\u6557\u3057\u307e\u3057\u305f" : "Conversion failed");
@@ -64,14 +79,14 @@ export default function PdfToImagePage() {
       <PdfPreview file={file} />
 
       <div className="glass rounded-2xl p-4">
-        <p className="text-sm font-semibold text-slate-100">{isJa ? "\u51fa\u529b\u8a2d\u5b9a" : "Output settings"}</p>
+        <p className="text-sm font-semibold text-slate-800">{isJa ? "\u51fa\u529b\u8a2d\u5b9a" : "Output settings"}</p>
         <div className="mt-3 flex flex-wrap items-center gap-4">
-          <label htmlFor="image-format" className="text-sm text-slate-200">
+          <label htmlFor="image-format" className="text-sm text-slate-700">
             {isJa ? "\u5f62\u5f0f" : "Format"}
           </label>
           <select
             id="image-format"
-            className="rounded-lg border border-white/20 bg-slate-900/60 px-3 py-2 text-sm text-slate-100"
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-slate-800"
             value={format}
             onChange={(e) => setFormat(e.target.value as ImageFormat)}
           >
@@ -79,8 +94,24 @@ export default function PdfToImagePage() {
             <option value="png">PNG</option>
           </select>
 
+          <label htmlFor="image-size" className="text-sm text-slate-700">
+            {isJa ? "\u753b\u50cf\u30b5\u30a4\u30ba" : "Image size"}
+          </label>
+          <select
+            id="image-size"
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-slate-800"
+            value={size}
+            onChange={(e) => setSize(e.target.value as ImageSizePreset)}
+          >
+            {IMAGE_SIZE_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {isJa ? option.labelJa : option.labelEn}
+              </option>
+            ))}
+          </select>
+
           {format === "jpg" && (
-            <label htmlFor="jpg-quality" className="flex items-center gap-2 text-sm text-slate-200">
+            <label htmlFor="jpg-quality" className="flex items-center gap-2 text-sm text-slate-700">
               {isJa ? "JPG\u54c1\u8cea" : "JPG quality"}
               <input
                 id="jpg-quality"
@@ -98,13 +129,13 @@ export default function PdfToImagePage() {
       </div>
 
       <div className="glass rounded-2xl p-4">
-        <p className="text-sm font-semibold text-slate-100">{isJa ? "\u51fa\u529b\u753b\u50cf" : "Output images"}</p>
+        <p className="text-sm font-semibold text-slate-800">{isJa ? "\u51fa\u529b\u753b\u50cf" : "Output images"}</p>
         <div className="mt-2 max-h-44 space-y-2 overflow-auto">
           {images.map((img) => (
             <button
               key={img.name}
               type="button"
-              className="block text-sm text-cyan-200 underline"
+              className="block text-sm text-red-600 underline"
               onClick={() => downloadBlob(img.blob, img.name)}
             >
               {img.name}
@@ -124,7 +155,7 @@ export default function PdfToImagePage() {
           disabled={images.length === 0}
           onClick={downloadAll}
         />
-        {error && <p className="text-sm text-rose-300">{error}</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </div>
     </ToolLayout>
   );
