@@ -111,9 +111,22 @@ export default function Home() {
       </section>
 
       <footer className="glass mt-8 rounded-xl p-4 text-xs ui-muted">
-        {isJa
-          ? "\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9\u306a\u3057 / \u30c8\u30e9\u30c3\u30ad\u30f3\u30b0\u306a\u3057 / \u30b5\u30fc\u30d0\u51e6\u7406\u306a\u3057"
-          : "No uploads, no tracking, no server processing."}
+        <p>
+          {isJa
+            ? "アップロードなし / トラッキングなし / サーバー処理なし"
+            : "No uploads, no tracking, no server processing."}
+        </p>
+        <p className="mt-2">
+          Made by{" "}
+          <a
+            href="https://github.com/yuk1-kondo"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-red-600 hover:underline"
+          >
+            YUKI_KONDO
+          </a>
+        </p>
       </footer>
     </main>
   );
