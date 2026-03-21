@@ -1,4 +1,4 @@
-import { PDFDocument, degrees } from "pdf-lib";
+import { PDFDocument, StandardFonts, degrees, rgb } from "pdf-lib";
 
 type ImageInput = {
   name: string;
@@ -26,7 +26,50 @@ type WorkerRequest =
         quality?: number;
       };
     }
-  | { id: string; type: "imageToPdf"; payload: { images: ImageInput[] } };
+  | { id: string; type: "imageToPdf"; payload: { images: ImageInput[] } }
+  | {
+      id: string;
+      type: "watermark";
+      payload: {
+        file: ArrayBuffer;
+        text: string;
+        fontSize: number;
+        opacity: number;
+        rotation: number;
+        color: { r: number; g: number; b: number };
+      };
+    }
+  | {
+      id: string;
+      type: "pageNumbers";
+      payload: {
+        file: ArrayBuffer;
+        position: string;
+        startNumber: number;
+        fontSize: number;
+      };
+    }
+  | {
+      id: string;
+      type: "extract";
+      payload: { file: ArrayBuffer; pages: number[] };
+    }
+  | {
+      id: string;
+      type: "editMetadata";
+      payload: {
+        file: ArrayBuffer;
+        title: string;
+        author: string;
+        subject: string;
+        keywords: string;
+      };
+    }
+  | {
+      id: string;
+      type: "readMetadata";
+      payload: { file: ArrayBuffer };
+    };
 
 type WorkerResponse =
   | { id: string; ok: true; result: unknown }
@@ -121,6 +164,132 @@ async function imageToPdf(images: ImageInput[]): Promise<ArrayBuffer> {
   return toArrayBuffer(await doc.save());
 }
 
+async function addWatermark(
+  file: ArrayBuffer,
+  text: string,
+  fontSize: number,
+  opacity: number,
+  rotation: number,
+  color: { r: number; g: number; b: number },
+): Promise<ArrayBuffer> {
+  const doc = await PDFDocument.load(file);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const rad = (rotation * Math.PI) / 180;
+
+  for (const page of doc.getPages()) {
+    const { width, height } = page.getSize();
+    const textWidth = font.widthOfTextAtSize(text, fontSize);
+    const x = width / 2 - (textWidth / 2) * Math.cos(rad);
+    const y = height / 2 - (textWidth / 2) * Math.sin(rad);
+
+    page.drawText(text, {
+      x,
+      y,
+      size: fontSize,
+      font,
+      color: rgb(color.r / 255, color.g / 255, color.b / 255),
+      opacity,
+      rotate: degrees(rotation),
+    });
+  }
+
+  return toArrayBuffer(await doc.save());
+}
+
+async function addPageNumbers(
+  file: ArrayBuffer,
+  position: string,
+  startNumber: number,
+  fontSize: number,
+): Promise<ArrayBuffer> {
+  const doc = await PDFDocument.load(file);
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const margin = 40;
+
+  doc.getPages().forEach((page, index) => {
+    const { width, height } = page.getSize();
+    const text = String(startNumber + index);
+    const textWidth = font.widthOfTextAtSize(text, fontSize);
+
+    const [vertical, horizontal] = position.split("-");
+
+    let x: number;
+    if (horizontal === "left") x = margin;
+    else if (horizontal === "right") x = width - margin - textWidth;
+    else x = (width - textWidth) / 2;
+
+    const y = vertical === "top" ? height - margin : margin;
+
+    page.drawText(text, {
+      x,
+      y,
+      size: fontSize,
+      font,
+      color: rgb(0.4, 0.4, 0.4),
+    });
+  });
+
+  return toArrayBuffer(await doc.save());
+}
+
+async function extractPages(
+  file: ArrayBuffer,
+  pages: number[],
+): Promise<ArrayBuffer> {
+  const src = await PDFDocument.load(file);
+  const output = await PDFDocument.create();
+  const indices = pages
+    .map((p) => p - 1)
+    .filter((i) => i >= 0 && i < src.getPageCount());
+
+  const copiedPages = await output.copyPages(src, indices);
+  copiedPages.forEach((page) => output.addPage(page));
+
+  return toArrayBuffer(await output.save());
+}
+
+async function editPdfMetadata(
+  file: ArrayBuffer,
+  title: string,
+  author: string,
+  subject: string,
+  keywords: string,
+): Promise<ArrayBuffer> {
+  const doc = await PDFDocument.load(file);
+  doc.setTitle(title);
+  doc.setAuthor(author);
+  doc.setSubject(subject);
+  doc.setKeywords(
+    keywords
+      .split(",")
+      .map((k) => k.trim())
+      .filter(Boolean),
+  );
+
+  return toArrayBuffer(await doc.save());
+}
+
+async function readPdfMetadata(
+  file: ArrayBuffer,
+): Promise<{
+  title: string;
+  author: string;
+  subject: string;
+  keywords: string;
+  creator: string;
+  producer: string;
+}> {
+  const doc = await PDFDocument.load(file, { updateMetadata: false });
+  return {
+    title: doc.getTitle() ?? "",
+    author: doc.getAuthor() ?? "",
+    subject: doc.getSubject() ?? "",
+    keywords: doc.getKeywords() ?? "",
+    creator: doc.getCreator() ?? "",
+    producer: doc.getProducer() ?? "",
+  };
+}
+
 async function pdfToImage(
   file: ArrayBuffer,
   scale = 1.5,
@@ -199,8 +368,36 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
         payload.format,
         payload.quality,
       );
-    } else {
+    } else if (type === "imageToPdf") {
       result = await imageToPdf(payload.images);
+    } else if (type === "watermark") {
+      result = await addWatermark(
+        payload.file,
+        payload.text,
+        payload.fontSize,
+        payload.opacity,
+        payload.rotation,
+        payload.color,
+      );
+    } else if (type === "pageNumbers") {
+      result = await addPageNumbers(
+        payload.file,
+        payload.position,
+        payload.startNumber,
+        payload.fontSize,
+      );
+    } else if (type === "extract") {
+      result = await extractPages(payload.file, payload.pages);
+    } else if (type === "editMetadata") {
+      result = await editPdfMetadata(
+        payload.file,
+        payload.title,
+        payload.author,
+        payload.subject,
+        payload.keywords,
+      );
+    } else if (type === "readMetadata") {
+      result = await readPdfMetadata(payload.file);
     }
 
     const response: WorkerResponse = { id, ok: true, result };

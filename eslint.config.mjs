@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Bundled third-party worker asset (minified) is not source code.
+    "public/pdf.worker.min.mjs",
   ]),
 ]);
 

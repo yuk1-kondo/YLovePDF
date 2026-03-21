@@ -41,6 +41,51 @@ type TaskMap = {
     };
     result: ArrayBuffer;
   };
+  watermark: {
+    payload: {
+      file: ArrayBuffer;
+      text: string;
+      fontSize: number;
+      opacity: number;
+      rotation: number;
+      color: { r: number; g: number; b: number };
+    };
+    result: ArrayBuffer;
+  };
+  pageNumbers: {
+    payload: {
+      file: ArrayBuffer;
+      position: string;
+      startNumber: number;
+      fontSize: number;
+    };
+    result: ArrayBuffer;
+  };
+  extract: {
+    payload: { file: ArrayBuffer; pages: number[] };
+    result: ArrayBuffer;
+  };
+  editMetadata: {
+    payload: {
+      file: ArrayBuffer;
+      title: string;
+      author: string;
+      subject: string;
+      keywords: string;
+    };
+    result: ArrayBuffer;
+  };
+  readMetadata: {
+    payload: { file: ArrayBuffer };
+    result: {
+      title: string;
+      author: string;
+      subject: string;
+      keywords: string;
+      creator: string;
+      producer: string;
+    };
+  };
 };
 
 let worker: Worker | null = null;

@@ -46,6 +46,34 @@ const tools = [
     descriptionEn: "Apply lightweight optimization locally.",
     descriptionJa: "\u30d6\u30e9\u30a6\u30b6\u5185\u3067\u8efd\u91cf\u5727\u7e2e\u3057\u307e\u3059\u3002",
   },
+  {
+    href: "/watermark",
+    nameEn: "Add Watermark",
+    nameJa: "透かし追加",
+    descriptionEn: "Add text watermarks to every page.",
+    descriptionJa: "全ページにテキスト透かしを追加します。",
+  },
+  {
+    href: "/page-numbers",
+    nameEn: "Page Numbers",
+    nameJa: "ページ番号",
+    descriptionEn: "Insert page numbers on each page.",
+    descriptionJa: "各ページにページ番号を挿入します。",
+  },
+  {
+    href: "/extract",
+    nameEn: "Extract Pages",
+    nameJa: "ページ抽出",
+    descriptionEn: "Pick specific pages into a new PDF.",
+    descriptionJa: "特定のページだけを抽出します。",
+  },
+  {
+    href: "/edit-metadata",
+    nameEn: "Edit Metadata",
+    nameJa: "メタデータ編集",
+    descriptionEn: "Edit title, author, and other PDF properties.",
+    descriptionJa: "タイトル・作成者などのPDF属性を編集します。",
+  },
 ];
 
 export default function Home() {

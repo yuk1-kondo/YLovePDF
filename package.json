@@ -2,7 +2,14 @@
   "name": "ylovepdf",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
+    "postinstall": "\"$npm_node_execpath\" ./scripts/prune-duplicate-atypes.mjs",
+    "predev": "\"$npm_node_execpath\" ./scripts/check-node.mjs",
+    "prebuild": "\"$npm_node_execpath\" ./scripts/check-node.mjs",
+    "pretest": "\"$npm_node_execpath\" ./scripts/check-node.mjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
