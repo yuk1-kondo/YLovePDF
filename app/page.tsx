@@ -117,7 +117,7 @@ export default function Home() {
             : "No uploads, no tracking, no server processing."}
         </p>
         <p className="mt-2">
-          Made by{" "}
+          Developed by{" "}
           <a
             href="https://github.com/yuk1-kondo"
             target="_blank"
