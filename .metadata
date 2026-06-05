@@ -1,0 +1,17 @@
+version:
+  revision: "manual-sticker-pocket-mvp"
+  channel: "stable"
+
+project_type: app
+
+migration:
+  platforms:
+    - platform: root
+      create_revision: manual-sticker-pocket-mvp
+      base_revision: manual-sticker-pocket-mvp
+    - platform: android
+      create_revision: manual-sticker-pocket-mvp
+      base_revision: manual-sticker-pocket-mvp
+    - platform: ios
+      create_revision: manual-sticker-pocket-mvp
+      base_revision: manual-sticker-pocket-mvp
