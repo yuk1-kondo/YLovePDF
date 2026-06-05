@@ -37,8 +37,10 @@ class Sticker {
 }
 
 class StickerAdapter extends TypeAdapter<Sticker> {
+  static const typeIdValue = 1;
+
   @override
-  final int typeId = 1;
+  final int typeId = typeIdValue;
 
   @override
   Sticker read(BinaryReader reader) {

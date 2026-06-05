@@ -9,7 +9,9 @@ import 'screens/home_screen.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  Hive.registerAdapter(StickerAdapter());
+  if (!Hive.isAdapterRegistered(StickerAdapter.typeIdValue)) {
+    Hive.registerAdapter(StickerAdapter());
+  }
   final repository = await StickerRepository.create();
   runApp(StickerPocketApp(repository: repository));
 }

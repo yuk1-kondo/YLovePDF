@@ -24,6 +24,29 @@ class StickerStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  Sticker? findById(String id) {
+    for (final sticker in _stickers) {
+      if (sticker.id == id) {
+        return sticker;
+      }
+    }
+    return null;
+  }
+
+  Future<void> updateStickerName({
+    required Sticker sticker,
+    required String name,
+  }) async {
+    final updated = await _repository.updateStickerName(
+      sticker: sticker,
+      name: name,
+    );
+    _stickers = _stickers
+        .map((item) => item.id == updated.id ? updated : item)
+        .toList();
+    notifyListeners();
+  }
+
   Future<void> deleteSticker(Sticker sticker) async {
     await _repository.deleteSticker(sticker);
     _stickers = _stickers.where((item) => item.id != sticker.id).toList();

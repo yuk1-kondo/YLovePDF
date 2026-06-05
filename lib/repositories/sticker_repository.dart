@@ -69,6 +69,17 @@ class StickerRepository {
     }
   }
 
+  Future<Sticker> updateStickerName({
+    required Sticker sticker,
+    required String name,
+  }) async {
+    final updated = sticker.copyWith(
+      name: name.trim().isEmpty ? 'なまえのないシール' : name.trim(),
+    );
+    await _box.put(updated.id, updated);
+    return updated;
+  }
+
   Future<void> deleteSticker(Sticker sticker) async {
     final image = File(sticker.imagePath);
     if (image.existsSync()) {
